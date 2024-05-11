@@ -6,19 +6,45 @@ using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 
+using System.IO;
 using Barotrauma.Items.Components;
 
 namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
+    public static string ModVersion = "1.0.0";
+    public static string ModName = "Fewer Sonar Markers";
+    public static string ModDir = "";
+
+    public static Settings settings;
+
     public Harmony harmony;
 
     public void Initialize()
     {
       harmony = new Harmony("no.markers");
+      figureOutModVersionAndDirPath();
+      Settings.load();
 
       patchAll();
+    }
+
+    public void figureOutModVersionAndDirPath()
+    {
+      bool found = false;
+      foreach (ContentPackage p in ContentPackageManager.EnabledPackages.All)
+      {
+        if (p.Name.Contains(ModName))
+        {
+          found = true;
+          ModVersion = p.ModVersion;
+          ModDir = Path.GetFullPath(p.Dir);
+          break;
+        }
+      }
+
+      if (!found) log($"Couldn't figure out {ModName} mod folder", Color.Orange);
     }
 
     public void patchAll()
