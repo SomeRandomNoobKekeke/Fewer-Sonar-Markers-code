@@ -15,11 +15,17 @@ using System.Linq;
 using System.Xml.Linq;
 using Barotrauma.Items.Components;
 
+using PositionType = Barotrauma.Level.PositionType;
+
+//using System.Text.Json;
+
 namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
     public Harmony harmony;
+
+    public static bool removeMarkers = true;
 
     public void Initialize()
     {
@@ -27,14 +33,41 @@ namespace NoMarkersNamespace
 
       patchAll();
 
-      init();
+      DebugConsole.Commands.Add(new DebugConsole.Command("togglesonarmarkers", "", (string[] args) =>
+      {
+        removeMarkers = !removeMarkers;
+      }));
     }
 
-    public static void init() { }
+    public static bool isMissionAllowed(Mission mission)
+    {
+      if (mission is BeaconMission) return false;
+      if (mission is PirateMission) return false;
+      if (mission is MonsterMission) return false;
+      if (mission is NestMission) return false;
+
+
+      if (mission is MineralMission mm)
+      {
+        if (mm.positionType == PositionType.Cave)
+        {
+          if (mm.caves.Count != 0) return false;
+        }
+      }
+
+      if (mission is SalvageMission sm)
+      {
+        if (sm.targets.All(t => t.SpawnPositionType == PositionType.Wreck)) return false;
+      }
+
+      return true;
+    }
 
 
     public static bool Sonar_DrawSonar_Prefix(SpriteBatch spriteBatch, Rectangle rect, Sonar __instance)
     {
+      if (!removeMarkers) return true;
+
       Sonar _ = __instance;
 
       _.displayBorderSize = 0.2f;
@@ -155,7 +188,8 @@ namespace NoMarkersNamespace
               aiTarget.SonarIconIdentifier,
               aiTarget,
               aiTarget.WorldPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius * 0.975f);
+              _.DisplayScale, _.center, _.DisplayRadius * 0.975f,
+              onlyShowTextOnMouseOver: true);
         }
       }
 
@@ -170,7 +204,8 @@ namespace NoMarkersNamespace
               (Level.Loaded.StartOutpost != null ? "outpost" : "location").ToIdentifier(),
               "startlocation",
               Level.Loaded.StartExitPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius);
+              _.DisplayScale, _.center, _.DisplayRadius,
+              onlyShowTextOnMouseOver: true);
         }
 
         if (Level.Loaded is { EndLocation.Type.ShowSonarMarker: true, Type: LevelData.LevelType.LocationConnection })
@@ -180,7 +215,8 @@ namespace NoMarkersNamespace
               (Level.Loaded.EndOutpost != null ? "outpost" : "location").ToIdentifier(),
               "endlocation",
               Level.Loaded.EndExitPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius);
+              _.DisplayScale, _.center, _.DisplayRadius,
+              onlyShowTextOnMouseOver: true);
         }
 
         for (int i = 0; i < Level.Loaded.Caves.Count; i++)
@@ -192,13 +228,16 @@ namespace NoMarkersNamespace
               "cave".ToIdentifier(),
               "cave" + i,
               cave.StartPos.ToVector2(), transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius);
+              _.DisplayScale, _.center, _.DisplayRadius,
+              onlyShowTextOnMouseOver: true);
         }
       }
 
       int missionIndex = 0;
       foreach (Mission mission in GameMain.GameSession.Missions)
       {
+        if (!isMissionAllowed(mission)) continue;
+
         int i = 0;
         foreach ((LocalizedString label, Vector2 position) in mission.SonarLabels)
         {
@@ -209,15 +248,15 @@ namespace NoMarkersNamespace
                 mission.SonarIconIdentifier,
                 "mission" + missionIndex + ":" + i,
                 position, transducerCenter,
-                _.DisplayScale, _.center, _.DisplayRadius * 0.95f);
+                _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
+              onlyShowTextOnMouseOver: true);
           }
           i++;
         }
         missionIndex++;
       }
 
-      if (_.HasMineralScanner && _.UseMineralScanner && _.CurrentMode == Sonar.Mode.Active && _.MineralClusters != null &&
-          (_.item.CurrentHull == null || !_.DetectSubmarineWalls))
+      if (_.HasMineralScanner && _.UseMineralScanner && _.CurrentMode == Sonar.Mode.Active && _.MineralClusters != null && !_.DetectSubmarineWalls)
       {
         foreach (var c in _.MineralClusters)
         {
@@ -271,7 +310,8 @@ namespace NoMarkersNamespace
             (sub.Info.HasTag(SubmarineTag.Shuttle) ? "shuttle" : "submarine").ToIdentifier(),
             sub,
             sub.WorldPosition, transducerCenter,
-            _.DisplayScale, _.center, _.DisplayRadius * 0.95f);
+            _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
+              onlyShowTextOnMouseOver: true);
       }
 
       if (GameMain.DebugDraw)
@@ -283,13 +323,22 @@ namespace NoMarkersNamespace
       return false;
     }
 
+    public static void permitCommands(Identifier command, ref bool __result)
+    {
+      if (command.Value == "togglesonarmarkers") __result = true;
+    }
+
 
     public void patchAll()
     {
-
       harmony.Patch(
         original: typeof(Sonar).GetMethod("DrawSonar", AccessTools.all),
         prefix: new HarmonyMethod(typeof(Mod).GetMethod("Sonar_DrawSonar_Prefix"))
+      );
+
+      harmony.Patch(
+        original: typeof(LuaGame).GetMethod("IsCustomCommandPermitted"),
+        postfix: new HarmonyMethod(typeof(Mod).GetMethod("permitCommands"))
       );
     }
 
@@ -307,6 +356,8 @@ namespace NoMarkersNamespace
     {
       harmony.UnpatchAll(harmony.Id);
       harmony = null;
+
+      DebugConsole.Commands.RemoveAll(c => c.Names[0] == "togglesonarmarkers");
     }
   }
 
