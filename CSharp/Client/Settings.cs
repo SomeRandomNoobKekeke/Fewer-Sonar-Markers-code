@@ -20,7 +20,10 @@ namespace NoMarkersNamespace
     public static string SettingsFileName = "Settings.json";
     public class Settings
     {
-      public string Version { get; set; }
+      public bool ModEnabled { get; set; } = true;
+      public SonarSettings StaticSonar { get; set; } = new SonarSettings();
+      public SonarSettings HandheldSonar { get; set; } = new SonarSettings();
+      public string Version { get; set; } = "0.0.0";
 
       public Settings()
       {

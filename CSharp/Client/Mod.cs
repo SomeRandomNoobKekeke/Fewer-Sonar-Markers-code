@@ -28,6 +28,8 @@ namespace NoMarkersNamespace
       Settings.load();
 
       patchAll();
+
+      log("compiled!");
     }
 
     public void figureOutModVersionAndDirPath()

@@ -14,6 +14,9 @@ namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
-
+    public class SonarSettings
+    {
+      public bool showMarksOnlyOnMouseHover { get; set; } = true;
+    }
   }
 }

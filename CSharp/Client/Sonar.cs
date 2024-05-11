@@ -23,7 +23,13 @@ namespace NoMarkersNamespace
   {
     public static bool Sonar_DrawSonar_Prefix(SpriteBatch spriteBatch, Rectangle rect, Sonar __instance)
     {
+      if (!settings.ModEnabled) return true;
+
       Sonar _ = __instance;
+
+      // this is how devs check for handheld sonar so i try this too
+      SonarSettings mySettings = _.DetectSubmarineWalls ? settings.HandheldSonar : settings.StaticSonar;
+
 
       _.displayBorderSize = 0.2f;
       _.center = rect.Center.ToVector2();
@@ -143,7 +149,8 @@ namespace NoMarkersNamespace
               aiTarget.SonarIconIdentifier,
               aiTarget,
               aiTarget.WorldPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius * 0.975f);
+              _.DisplayScale, _.center, _.DisplayRadius * 0.975f,
+              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
         }
       }
 
@@ -158,7 +165,8 @@ namespace NoMarkersNamespace
               (Level.Loaded.StartOutpost != null ? "outpost" : "location").ToIdentifier(),
               "startlocation",
               Level.Loaded.StartExitPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius);
+              _.DisplayScale, _.center, _.DisplayRadius,
+              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
         }
 
         if (Level.Loaded is { EndLocation.Type.ShowSonarMarker: true, Type: LevelData.LevelType.LocationConnection })
@@ -168,7 +176,8 @@ namespace NoMarkersNamespace
               (Level.Loaded.EndOutpost != null ? "outpost" : "location").ToIdentifier(),
               "endlocation",
               Level.Loaded.EndExitPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius);
+              _.DisplayScale, _.center, _.DisplayRadius,
+              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
         }
 
         for (int i = 0; i < Level.Loaded.Caves.Count; i++)
@@ -180,7 +189,8 @@ namespace NoMarkersNamespace
               "cave".ToIdentifier(),
               "cave" + i,
               cave.StartPos.ToVector2(), transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius);
+              _.DisplayScale, _.center, _.DisplayRadius,
+              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
         }
       }
 
@@ -197,7 +207,8 @@ namespace NoMarkersNamespace
                 mission.SonarIconIdentifier,
                 "mission" + missionIndex + ":" + i,
                 position, transducerCenter,
-                _.DisplayScale, _.center, _.DisplayRadius * 0.95f);
+                _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
+                onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
           }
           i++;
         }
@@ -259,7 +270,8 @@ namespace NoMarkersNamespace
             (sub.Info.HasTag(SubmarineTag.Shuttle) ? "shuttle" : "submarine").ToIdentifier(),
             sub,
             sub.WorldPosition, transducerCenter,
-            _.DisplayScale, _.center, _.DisplayRadius * 0.95f);
+            _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
+            onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
       }
 
       if (GameMain.DebugDraw)
