@@ -6,6 +6,8 @@ using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 
+using Barotrauma.Items.Components;
+
 namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
@@ -24,11 +26,6 @@ namespace NoMarkersNamespace
       harmony.Patch(
         original: typeof(Sonar).GetMethod("DrawSonar", AccessTools.all),
         prefix: new HarmonyMethod(typeof(Mod).GetMethod("Sonar_DrawSonar_Prefix"))
-      );
-
-      harmony.Patch(
-        original: typeof(LuaGame).GetMethod("IsCustomCommandPermitted"),
-        postfix: new HarmonyMethod(typeof(Mod).GetMethod("permitCommands"))
       );
     }
 
