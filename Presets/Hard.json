@@ -1,0 +1,84 @@
+{
+  "ModEnabled": true,
+  "StaticSonar": {
+    "showMarkersOnlyOnMouseHover": true,
+    "drawMarkersIn": {
+      "ClearRuinMission": true,
+      "BeaconMission": false,
+      "AbandonedOutpostMission": true,
+      "EndMission": true,
+      "MineralMission": true,
+      "MonsterMission": false,
+      "NestMission": true,
+      "PirateMission": false,
+      "SalvageMission": true,
+      "ScanMission": true
+    },
+    "allowedPositionsIn": {
+      "MineralMission": {
+        "Cave": false,
+        "SidePath": true,
+        "MainPath": true,
+        "AbyssCave": true
+      },
+      "MonsterMission": {
+        "MainPath": true,
+        "SidePath": true,
+        "Abyss": true
+      },
+      "NestMission": {
+        "Cave": false,
+        "Ruin": true
+      },
+      "SalvageMission": {
+        "Ruin": true,
+        "Cave": true,
+        "AbyssCave": true,
+        "Wreck": false,
+        "Outpost": true,
+        "None": true
+      }
+    }
+  },
+  "HandheldSonar": {
+    "showMarkersOnlyOnMouseHover": true,
+    "drawMarkersIn": {
+      "ClearRuinMission": true,
+      "BeaconMission": false,
+      "AbandonedOutpostMission": true,
+      "EndMission": true,
+      "MineralMission": true,
+      "MonsterMission": false,
+      "NestMission": true,
+      "PirateMission": false,
+      "SalvageMission": true,
+      "ScanMission": true
+    },
+    "allowedPositionsIn": {
+      "MineralMission": {
+        "Cave": false,
+        "SidePath": true,
+        "MainPath": true,
+        "AbyssCave": true
+      },
+      "MonsterMission": {
+        "MainPath": true,
+        "SidePath": true,
+        "Abyss": true
+      },
+      "NestMission": {
+        "Cave": false,
+        "Ruin": true
+      },
+      "SalvageMission": {
+        "Ruin": true,
+        "Cave": true,
+        "AbyssCave": true,
+        "Wreck": false,
+        "Outpost": true,
+        "None": true
+      }
+    }
+  },
+  "showMissionsWithPositionCaveIfTheyAreNotRegisteredInTheirCaveForSomeReason": true
+}

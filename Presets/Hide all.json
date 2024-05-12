@@ -1,0 +1,84 @@
+{
+  "ModEnabled": true,
+  "StaticSonar": {
+    "showMarkersOnlyOnMouseHover": true,
+    "drawMarkersIn": {
+      "ClearRuinMission": false,
+      "BeaconMission": false,
+      "AbandonedOutpostMission": false,
+      "EndMission": false,
+      "MineralMission": false,
+      "MonsterMission": false,
+      "NestMission": false,
+      "PirateMission": false,
+      "SalvageMission": false,
+      "ScanMission": false
+    },
+    "allowedPositionsIn": {
+      "MineralMission": {
+        "Cave": false,
+        "SidePath": false,
+        "MainPath": false,
+        "AbyssCave": false
+      },
+      "MonsterMission": {
+        "MainPath": false,
+        "SidePath": false,
+        "Abyss": false
+      },
+      "NestMission": {
+        "Cave": false,
+        "Ruin": false
+      },
+      "SalvageMission": {
+        "Ruin": false,
+        "Cave": false,
+        "AbyssCave": false,
+        "Wreck": false,
+        "Outpost": false,
+        "None": false
+      }
+    }
+  },
+  "HandheldSonar": {
+    "showMarkersOnlyOnMouseHover": true,
+    "drawMarkersIn": {
+      "ClearRuinMission": false,
+      "BeaconMission": false,
+      "AbandonedOutpostMission": false,
+      "EndMission": false,
+      "MineralMission": false,
+      "MonsterMission": false,
+      "NestMission": false,
+      "PirateMission": false,
+      "SalvageMission": false,
+      "ScanMission": false
+    },
+    "allowedPositionsIn": {
+      "MineralMission": {
+        "Cave": false,
+        "SidePath": false,
+        "MainPath": false,
+        "AbyssCave": false
+      },
+      "MonsterMission": {
+        "MainPath": false,
+        "SidePath": false,
+        "Abyss": false
+      },
+      "NestMission": {
+        "Cave": false,
+        "Ruin": false
+      },
+      "SalvageMission": {
+        "Ruin": false,
+        "Cave": false,
+        "AbyssCave": false,
+        "Wreck": false,
+        "Outpost": false,
+        "None": false
+      }
+    }
+  },
+  "showMissionsWithPositionCaveIfTheyAreNotRegisteredInTheirCaveForSomeReason": true
+}

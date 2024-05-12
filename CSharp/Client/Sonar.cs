@@ -150,7 +150,7 @@ namespace NoMarkersNamespace
               aiTarget,
               aiTarget.WorldPosition, transducerCenter,
               _.DisplayScale, _.center, _.DisplayRadius * 0.975f,
-              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
+              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
         }
       }
 
@@ -166,7 +166,7 @@ namespace NoMarkersNamespace
               "startlocation",
               Level.Loaded.StartExitPosition, transducerCenter,
               _.DisplayScale, _.center, _.DisplayRadius,
-              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
+              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
         }
 
         if (Level.Loaded is { EndLocation.Type.ShowSonarMarker: true, Type: LevelData.LevelType.LocationConnection })
@@ -177,7 +177,7 @@ namespace NoMarkersNamespace
               "endlocation",
               Level.Loaded.EndExitPosition, transducerCenter,
               _.DisplayScale, _.center, _.DisplayRadius,
-              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
+              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
         }
 
         for (int i = 0; i < Level.Loaded.Caves.Count; i++)
@@ -190,13 +190,15 @@ namespace NoMarkersNamespace
               "cave" + i,
               cave.StartPos.ToVector2(), transducerCenter,
               _.DisplayScale, _.center, _.DisplayRadius,
-              onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
+              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
         }
       }
 
       int missionIndex = 0;
       foreach (Mission mission in GameMain.GameSession.Missions)
       {
+        if (!isMissionAllowed(mission, _)) continue;
+
         int i = 0;
         foreach ((LocalizedString label, Vector2 position) in mission.SonarLabels)
         {
@@ -208,7 +210,7 @@ namespace NoMarkersNamespace
                 "mission" + missionIndex + ":" + i,
                 position, transducerCenter,
                 _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
-                onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
+                onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
           }
           i++;
         }
@@ -271,7 +273,7 @@ namespace NoMarkersNamespace
             sub,
             sub.WorldPosition, transducerCenter,
             _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
-            onlyShowTextOnMouseOver: mySettings.showMarksOnlyOnMouseHover);
+            onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
       }
 
       if (GameMain.DebugDraw)

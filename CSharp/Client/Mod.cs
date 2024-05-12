@@ -8,6 +8,12 @@ using Microsoft.Xna.Framework;
 
 using System.IO;
 using Barotrauma.Items.Components;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+[assembly: IgnoresAccessChecksTo("Barotrauma")]
+[assembly: IgnoresAccessChecksTo("DedicatedServer")]
+[assembly: IgnoresAccessChecksTo("BarotraumaCore")]
 
 namespace NoMarkersNamespace
 {
@@ -17,6 +23,8 @@ namespace NoMarkersNamespace
     public static string ModName = "Fewer Sonar Markers";
     public static string ModDir = "";
 
+    public static string ModStage = "debug";
+
     public static Settings settings;
 
     public Harmony harmony;
@@ -25,11 +33,17 @@ namespace NoMarkersNamespace
     {
       harmony = new Harmony("no.markers");
       figureOutModVersionAndDirPath();
-      Settings.load();
+
+      settings = new Settings();
+      settings.load();
+
+      addCommands();
 
       patchAll();
 
-      log("compiled!");
+
+
+      if (ModStage == "debug") log("compiled!");
     }
 
     public void figureOutModVersionAndDirPath()
@@ -55,13 +69,24 @@ namespace NoMarkersNamespace
         original: typeof(Sonar).GetMethod("DrawSonar", AccessTools.all),
         prefix: new HarmonyMethod(typeof(Mod).GetMethod("Sonar_DrawSonar_Prefix"))
       );
+
+      harmony.Patch(
+        original: typeof(LuaGame).GetMethod("IsCustomCommandPermitted"),
+        postfix: new HarmonyMethod(typeof(Mod).GetMethod("permitCommands"))
+      );
     }
 
 
     public static void log(object msg, Color? cl = null, [CallerLineNumber] int lineNumber = 0)
     {
       if (cl == null) cl = Color.Cyan;
-      DebugConsole.NewMessage($"{lineNumber}| {msg ?? "null"}", cl);
+      DebugConsole.NewMessage($"{lineNumber} {msg ?? "null"}", cl);
+    }
+
+    public static string json(Object o, bool indent = false)
+    {
+      try { return JsonSerializer.Serialize(o, new JsonSerializerOptions { WriteIndented = indent }); }
+      catch (Exception e) { if (ModStage == "debug") log(e); return ""; }
     }
 
     public void OnLoadCompleted() { }
@@ -71,6 +96,7 @@ namespace NoMarkersNamespace
     {
       harmony.UnpatchAll(harmony.Id);
       harmony = null;
+      removeCommands();
     }
   }
 

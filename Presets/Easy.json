@@ -1,0 +1,84 @@
+{
+  "ModEnabled": true,
+  "StaticSonar": {
+    "showMarkersOnlyOnMouseHover": true,
+    "drawMarkersIn": {
+      "ClearRuinMission": true,
+      "BeaconMission": true,
+      "AbandonedOutpostMission": true,
+      "EndMission": true,
+      "MineralMission": true,
+      "MonsterMission": true,
+      "NestMission": true,
+      "PirateMission": true,
+      "SalvageMission": true,
+      "ScanMission": true
+    },
+    "allowedPositionsIn": {
+      "MineralMission": {
+        "Cave": true,
+        "SidePath": true,
+        "MainPath": true,
+        "AbyssCave": true
+      },
+      "MonsterMission": {
+        "MainPath": true,
+        "SidePath": true,
+        "Abyss": true
+      },
+      "NestMission": {
+        "Cave": true,
+        "Ruin": true
+      },
+      "SalvageMission": {
+        "Ruin": true,
+        "Cave": true,
+        "AbyssCave": true,
+        "Wreck": true,
+        "Outpost": true,
+        "None": true
+      }
+    }
+  },
+  "HandheldSonar": {
+    "showMarkersOnlyOnMouseHover": true,
+    "drawMarkersIn": {
+      "ClearRuinMission": true,
+      "BeaconMission": true,
+      "AbandonedOutpostMission": true,
+      "EndMission": true,
+      "MineralMission": true,
+      "MonsterMission": true,
+      "NestMission": true,
+      "PirateMission": true,
+      "SalvageMission": true,
+      "ScanMission": true
+    },
+    "allowedPositionsIn": {
+      "MineralMission": {
+        "Cave": true,
+        "SidePath": true,
+        "MainPath": true,
+        "AbyssCave": true
+      },
+      "MonsterMission": {
+        "MainPath": true,
+        "SidePath": true,
+        "Abyss": true
+      },
+      "NestMission": {
+        "Cave": true,
+        "Ruin": true
+      },
+      "SalvageMission": {
+        "Ruin": true,
+        "Cave": true,
+        "AbyssCave": true,
+        "Wreck": true,
+        "Outpost": true,
+        "None": true
+      }
+    }
+  },
+  "showMissionsWithPositionCaveIfTheyAreNotRegisteredInTheirCaveForSomeReason": true
+}

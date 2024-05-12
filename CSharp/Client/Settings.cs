@@ -18,11 +18,14 @@ namespace NoMarkersNamespace
     public static string ModSettingsFolder = "ModSettings\\";
     public static string SettingsFolder = "ModSettings\\Fewer Sonar Markers\\";
     public static string SettingsFileName = "Settings.json";
+    public static string PresetsFolder = "Presets";
     public class Settings
     {
       public bool ModEnabled { get; set; } = true;
       public SonarSettings StaticSonar { get; set; } = new SonarSettings();
       public SonarSettings HandheldSonar { get; set; } = new SonarSettings();
+
+      public bool showMissionsWithPositionCaveIfTheyAreNotRegisteredInTheirCaveForSomeReason { get; set; } = true;
       public string Version { get; set; } = "0.0.0";
 
       public Settings()
@@ -41,22 +44,25 @@ namespace NoMarkersNamespace
         if (!Directory.Exists(ModSettingsFolder)) Directory.CreateDirectory(ModSettingsFolder);
         if (!Directory.Exists(SettingsFolder)) Directory.CreateDirectory(SettingsFolder);
 
-        if (!File.Exists(Path.Combine(SettingsFolder, SettingsFileName))) saveSettings();
+        if (!File.Exists(Path.Combine(SettingsFolder, SettingsFileName))) settings.save();
       }
 
-      public static void load()
+      public void load(string path = "", bool verbose = false)
       {
-        settings = new Settings();
-
         createStuffIfItDoesntExist();
+
+        if (path == "") path = Path.Combine(SettingsFolder, SettingsFileName);
+        else verbose = true;
 
         try
         {
           settings = JsonSerializer.Deserialize<Settings>(
-            File.ReadAllText(Path.Combine(SettingsFolder, SettingsFileName))
+            File.ReadAllText(path)
           );
         }
         catch (Exception e) { log(e.Message, Color.Orange); }
+
+        if (verbose) log($"loaded {path}");
 
         if (String.Compare(settings.Version, ModVersion) < 0)
         {
@@ -64,10 +70,10 @@ namespace NoMarkersNamespace
           forceChangeSomething();
         }
 
-        saveSettings();
+        settings.save();
       }
 
-      public static void saveSettings()
+      public void save()
       {
         File.WriteAllText(
           Path.Combine(SettingsFolder, SettingsFileName),
