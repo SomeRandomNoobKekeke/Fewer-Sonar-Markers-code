@@ -137,20 +137,23 @@ namespace NoMarkersNamespace
         _.signalWarningText.Visible = false;
       }
 
-      foreach (AITarget aiTarget in AITarget.List)
+      if (mySettings.showAiTargets)
       {
-        if (aiTarget.InDetectable) { continue; }
-        if (aiTarget.SonarLabel.IsNullOrEmpty() || aiTarget.SoundRange <= 0.0f) { continue; }
-
-        if (Vector2.DistanceSquared(aiTarget.WorldPosition, transducerCenter) < aiTarget.SoundRange * aiTarget.SoundRange)
+        foreach (AITarget aiTarget in AITarget.List)
         {
-          _.DrawMarker(spriteBatch,
-              aiTarget.SonarLabel.Value,
-              aiTarget.SonarIconIdentifier,
-              aiTarget,
-              aiTarget.WorldPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius * 0.975f,
-              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          if (aiTarget.InDetectable) { continue; }
+          if (aiTarget.SonarLabel.IsNullOrEmpty() || aiTarget.SoundRange <= 0.0f) { continue; }
+
+          if (Vector2.DistanceSquared(aiTarget.WorldPosition, transducerCenter) < aiTarget.SoundRange * aiTarget.SoundRange)
+          {
+            _.DrawMarker(spriteBatch,
+                aiTarget.SonarLabel.Value,
+                aiTarget.SonarIconIdentifier,
+                aiTarget,
+                aiTarget.WorldPosition, transducerCenter,
+                _.DisplayScale, _.center, _.DisplayRadius * 0.975f,
+                onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          }
         }
       }
 
@@ -158,39 +161,45 @@ namespace NoMarkersNamespace
 
       if (Level.Loaded != null)
       {
-        if (Level.Loaded.StartLocation?.Type is { ShowSonarMarker: true })
+        if (mySettings.showOutpostMarkers)
         {
-          _.DrawMarker(spriteBatch,
-              Level.Loaded.StartLocation.DisplayName.Value,
-              (Level.Loaded.StartOutpost != null ? "outpost" : "location").ToIdentifier(),
-              "startlocation",
-              Level.Loaded.StartExitPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius,
-              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          if (Level.Loaded.StartLocation?.Type is { ShowSonarMarker: true })
+          {
+            _.DrawMarker(spriteBatch,
+                Level.Loaded.StartLocation.DisplayName.Value,
+                (Level.Loaded.StartOutpost != null ? "outpost" : "location").ToIdentifier(),
+                "startlocation",
+                Level.Loaded.StartExitPosition, transducerCenter,
+                _.DisplayScale, _.center, _.DisplayRadius,
+                onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          }
+
+          if (Level.Loaded is { EndLocation.Type.ShowSonarMarker: true, Type: LevelData.LevelType.LocationConnection })
+          {
+            _.DrawMarker(spriteBatch,
+                Level.Loaded.EndLocation.DisplayName.Value,
+                (Level.Loaded.EndOutpost != null ? "outpost" : "location").ToIdentifier(),
+                "endlocation",
+                Level.Loaded.EndExitPosition, transducerCenter,
+                _.DisplayScale, _.center, _.DisplayRadius,
+                onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          }
         }
 
-        if (Level.Loaded is { EndLocation.Type.ShowSonarMarker: true, Type: LevelData.LevelType.LocationConnection })
+        if (mySettings.showCaveMarkers)
         {
-          _.DrawMarker(spriteBatch,
-              Level.Loaded.EndLocation.DisplayName.Value,
-              (Level.Loaded.EndOutpost != null ? "outpost" : "location").ToIdentifier(),
-              "endlocation",
-              Level.Loaded.EndExitPosition, transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius,
-              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
-        }
-
-        for (int i = 0; i < Level.Loaded.Caves.Count; i++)
-        {
-          var cave = Level.Loaded.Caves[i];
-          if (cave.MissionsToDisplayOnSonar.None()) { continue; }
-          _.DrawMarker(spriteBatch,
-              Sonar.caveLabel.Value,
-              "cave".ToIdentifier(),
-              "cave" + i,
-              cave.StartPos.ToVector2(), transducerCenter,
-              _.DisplayScale, _.center, _.DisplayRadius,
-              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          for (int i = 0; i < Level.Loaded.Caves.Count; i++)
+          {
+            var cave = Level.Loaded.Caves[i];
+            if (cave.MissionsToDisplayOnSonar.None()) { continue; }
+            _.DrawMarker(spriteBatch,
+                Sonar.caveLabel.Value,
+                "cave".ToIdentifier(),
+                "cave" + i,
+                cave.StartPos.ToVector2(), transducerCenter,
+                _.DisplayScale, _.center, _.DisplayRadius,
+                onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          }
         }
       }
 
@@ -217,7 +226,7 @@ namespace NoMarkersNamespace
         missionIndex++;
       }
 
-      if (_.HasMineralScanner && _.UseMineralScanner && _.CurrentMode == Sonar.Mode.Active && _.MineralClusters != null &&
+      if (mySettings.showMinerals && _.HasMineralScanner && _.UseMineralScanner && _.CurrentMode == Sonar.Mode.Active && _.MineralClusters != null &&
           (_.item.CurrentHull == null || !_.DetectSubmarineWalls))
       {
         foreach (var c in _.MineralClusters)
@@ -248,32 +257,35 @@ namespace NoMarkersNamespace
         }
       }
 
-      foreach (Submarine sub in Submarine.Loaded)
+      if (mySettings.showSumbarines)
       {
-        if (!sub.ShowSonarMarker) { continue; }
-        if (_.connectedSubs.Contains(sub)) { continue; }
-        if (Level.Loaded != null && sub.WorldPosition.Y > Level.Loaded.Size.Y) { continue; }
-
-        if (_.item.Submarine != null || Character.Controlled != null)
+        foreach (Submarine sub in Submarine.Loaded)
         {
-          //hide enemy team
-          if (sub.TeamID == CharacterTeamType.Team1 && (_.item.Submarine?.TeamID == CharacterTeamType.Team2 || Character.Controlled?.TeamID == CharacterTeamType.Team2))
-          {
-            continue;
-          }
-          else if (sub.TeamID == CharacterTeamType.Team2 && (_.item.Submarine?.TeamID == CharacterTeamType.Team1 || Character.Controlled?.TeamID == CharacterTeamType.Team1))
-          {
-            continue;
-          }
-        }
+          if (!sub.ShowSonarMarker) { continue; }
+          if (_.connectedSubs.Contains(sub)) { continue; }
+          if (Level.Loaded != null && sub.WorldPosition.Y > Level.Loaded.Size.Y) { continue; }
 
-        _.DrawMarker(spriteBatch,
-            sub.Info.DisplayName.Value,
-            (sub.Info.HasTag(SubmarineTag.Shuttle) ? "shuttle" : "submarine").ToIdentifier(),
-            sub,
-            sub.WorldPosition, transducerCenter,
-            _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
-            onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+          if (_.item.Submarine != null || Character.Controlled != null)
+          {
+            //hide enemy team
+            if (sub.TeamID == CharacterTeamType.Team1 && (_.item.Submarine?.TeamID == CharacterTeamType.Team2 || Character.Controlled?.TeamID == CharacterTeamType.Team2))
+            {
+              continue;
+            }
+            else if (sub.TeamID == CharacterTeamType.Team2 && (_.item.Submarine?.TeamID == CharacterTeamType.Team1 || Character.Controlled?.TeamID == CharacterTeamType.Team1))
+            {
+              continue;
+            }
+          }
+
+          _.DrawMarker(spriteBatch,
+              sub.Info.DisplayName.Value,
+              (sub.Info.HasTag(SubmarineTag.Shuttle) ? "shuttle" : "submarine").ToIdentifier(),
+              sub,
+              sub.WorldPosition, transducerCenter,
+              _.DisplayScale, _.center, _.DisplayRadius * 0.95f,
+              onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
+        }
       }
 
       if (GameMain.DebugDraw)

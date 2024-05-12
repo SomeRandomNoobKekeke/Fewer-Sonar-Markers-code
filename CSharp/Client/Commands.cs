@@ -34,127 +34,150 @@ namespace NoMarkersNamespace
         settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
         settings.save();
       }},
-      {"hideall",(string[] args)=>{
-        settings.load(Path.Combine(ModDir, PresetsFolder, "Hide all.json"));
-        settings.save();
-      }},
-      {"revealall",(string[] args)=>{
-        settings.load(Path.Combine(ModDir, PresetsFolder, "Reveal all.json"));
-        settings.save();
-      }},
+
       {"hide",(string[] args)=>{
-        if(args.Length == 0) { log("hide what?"); return;}
+        string what = args.ElementAtOrDefault(0);
+        string positionType = args.ElementAtOrDefault(1);
+        string onWhichSonar = args.ElementAtOrDefault(2);
 
-        if(args.Length == 1) {
-          if(settings.HandheldSonar.drawMarkersIn.ContainsKey(args[0])){
-            settings.HandheldSonar.drawMarkersIn[args[0]] = false;
-            log($"{args[0]} markers on handheld sonar are hidden");
-          } else log("no such mission");
 
-          if(settings.StaticSonar.drawMarkersIn.ContainsKey(args[0])){
-            settings.StaticSonar.drawMarkersIn[args[0]] = false;
-            log($"{args[0]} markers on static sonar are hidden");
-          } else log("no such mission");
+        if(what == null) { log("hide what?"); return;}
+
+        if(what == "all"){
+          settings.load(Path.Combine(ModDir, PresetsFolder, "Hide all.json"));
+          settings.save();
+          return;
         }
 
-        if(args.Length == 2) {
-          switch(args[1]){
-            case "onhandheldsonar":
-              if(settings.HandheldSonar.drawMarkersIn.ContainsKey(args[0])){
-                settings.HandheldSonar.drawMarkersIn[args[0]] = false;
-                log($"{args[0]} markers on handheld sonar are hidden");
-              } else log("no such mission");
-              break;
-            case "onstaticsonar":
-              if(settings.StaticSonar.drawMarkersIn.ContainsKey(args[0])){
-                settings.StaticSonar.drawMarkersIn[args[0]] = false;
-                log($"{args[0]} markers on static sonar are hidden");
-              } else log("no such mission");
-              break;
-            default:
-              log("on which sonar?");
-              break;
+        if(onWhichSonar == null || onWhichSonar == "onhandheldsonar"){
+          modSonar("onhandheldsonar");
+        }
+
+        if(onWhichSonar == null || onWhichSonar == "onstaticsonar"){
+          modSonar("onstaticsonar");
+        }
+
+
+        void modSonar(string name){
+          SonarSettings sonar = name =="onstaticsonar" ?  settings.StaticSonar : settings.HandheldSonar ;
+
+          if(what=="labels"){
+            sonar.showMarkersOnlyOnMouseHover = true;
+            log($"showMarkersOnlyOnMouseHover = {true} {name}");
+            return;
           }
-        }
 
-        if(args.Length > 2) {
-          switch(args[1]){
-            case "onhandheldsonar":
-              if(settings.HandheldSonar.allowedPositionsIn.ContainsKey(args[0])){
-                settings.HandheldSonar.allowedPositionsIn[args[0]][args[2]] = false;
-                log($"{args[0]} markers {args[1]} in position {args[2]} are hidden");
-              } else log("this mission don't have spawn positions");
-              break;
-            case "onstaticsonar":
-              if(settings.StaticSonar.allowedPositionsIn.ContainsKey(args[0])){
-                settings.StaticSonar.allowedPositionsIn[args[0]][args[2]] = false;
-                log($"{args[0]} markers {args[1]} in position {args[2]} are hidden");
-              } else log("this mission don't have spawn positions");
-              break;
-            default:
-              log("on which sonar?");
-              break;
+          if(what=="caves"){
+            sonar.showCaveMarkers = false;
+            log($"showCaveMarkers = false {name}");
+            return;
+          }
+
+          if(what=="minerals"){
+            sonar.showMinerals = false;
+            log($"showMinerals = false {name}");
+            return;
+          }
+          if(what=="aitargets"){
+            sonar.showAiTargets = false;
+            log($"showAiTargets = false {name}");
+            return;
+          }
+          if(what=="outposts"){
+            sonar.showOutpostMarkers = false;
+            log($"showOutpostMarkers = false {name}");
+            return;
+          }
+
+          if(what=="submarines"){
+            sonar.showSumbarines = false;
+            log($"showSumbarines = false {name}");
+            return;
+          }
+
+          if(positionType == null){
+            if(sonar.drawMarkersIn.ContainsKey(what)){
+              sonar.drawMarkersIn[what] = false;
+              log($"{what} markers {name} are hidden");
+            } else  log("no such mission");
+          } else {
+            if(sonar.allowedPositionsIn.ContainsKey(what)){
+              sonar.allowedPositionsIn[what][positionType] = false;
+              log($"{what} markers {name} in {positionType} are hidden");
+            } else log("no such mission or it doesn't have spawn positions");
           }
         }
       }},
+
       {"reveal",(string[] args)=>{
-        if(args.Length == 0) { log("reveal what?"); return;}
+        string what = args.ElementAtOrDefault(0);
+        string positionType = args.ElementAtOrDefault(1);
+        string onWhichSonar = args.ElementAtOrDefault(2);
 
-        if(args.Length == 1) {
-          if(settings.HandheldSonar.drawMarkersIn.ContainsKey(args[0])){
-            settings.HandheldSonar.drawMarkersIn[args[0]] = true;
-            log($"{args[0]} markers on handheld sonar are revealed");
-          } else log("no such mission");
+        if(what == null) { log("reveal what?"); return;}
 
-          if(settings.StaticSonar.drawMarkersIn.ContainsKey(args[0])){
-            settings.StaticSonar.drawMarkersIn[args[0]] = true;
-            log($"{args[0]} markers on static sonar are revealed");
-          } else log("no such mission");
+        if(what == "all"){
+          settings.load(Path.Combine(ModDir, PresetsFolder, "Reveal all.json"));
+          settings.save();
+          return;
         }
 
-        if(args.Length == 2) {
-          switch(args[1]){
-            case "onhandheldsonar":
-              if(settings.HandheldSonar.drawMarkersIn.ContainsKey(args[0])){
-                settings.HandheldSonar.drawMarkersIn[args[0]] = true;
-                log($"{args[0]} markers on handheld sonar are revealed");
-              } else log("no such mission");
-              break;
-            case "onstaticsonar":
-              if(settings.StaticSonar.drawMarkersIn.ContainsKey(args[0])){
-                settings.StaticSonar.drawMarkersIn[args[0]] = true;
-                log($"{args[0]} markers  on static sonar are revealed");
-              } else log("no such mission");
-              break;
-            default:
-              log("on which sonar?");
-              break;
+        if(onWhichSonar == null || onWhichSonar == "onhandheldsonar"){
+          modSonar("onhandheldsonar");
+        }
+
+        if(onWhichSonar == null || onWhichSonar == "onstaticsonar"){
+          modSonar("onstaticsonar");
+        }
+
+
+        void modSonar(string name){
+          SonarSettings sonar = name =="onstaticsonar" ?  settings.StaticSonar : settings.HandheldSonar ;
+
+          if(what=="labels"){
+            sonar.showMarkersOnlyOnMouseHover = false;
+            log($"showMarkersOnlyOnMouseHover = {false} {name}");
+            return;
           }
-        }
 
-        if(args.Length > 2) {
-          switch(args[1]){
-            case "onhandheldsonar":
-              if(settings.HandheldSonar.drawMarkersIn.ContainsKey(args[0])){
-                settings.HandheldSonar.drawMarkersIn[args[0]] = true;
-              } else log("no such mission");
-              if(settings.HandheldSonar.allowedPositionsIn.ContainsKey(args[0])){
-                settings.HandheldSonar.allowedPositionsIn[args[0]][args[2]] = true;
-                log($"{args[0]} markers {args[1]} in position {args[2]} are revealed");
-              } else log("this mission don't have spawn positions");
-              break;
-            case "onstaticsonar":
-              if(settings.StaticSonar.drawMarkersIn.ContainsKey(args[0])){
-                settings.StaticSonar.drawMarkersIn[args[0]] = true;
-              } else log("no such mission");
-              if(settings.StaticSonar.allowedPositionsIn.ContainsKey(args[0])){
-                settings.StaticSonar.allowedPositionsIn[args[0]][args[2]] = true;
-                log($"{args[0]} markers {args[1]} in position {args[2]} are revealed");
-              } else log("this mission don't have spawn positions");
-              break;
-            default:
-              log("on which sonar?");
-              break;
+          if(what=="caves"){
+            sonar.showCaveMarkers = true;
+            log($"showCaveMarkers = true {name}");
+            return;
+          }
+
+          if(what=="minerals"){
+            sonar.showMinerals = true;
+            log($"showMinerals = true {name}");
+            return;
+          }
+          if(what=="aitargets"){
+            sonar.showAiTargets = true;
+            log($"showAiTargets = true {name}");
+            return;
+          }
+          if(what=="outposts"){
+            sonar.showOutpostMarkers = true;
+            log($"showOutpostMarkers = true {name}");
+            return;
+          }
+
+          if(what=="submarines"){
+            sonar.showSumbarines = true;
+            log($"showSumbarines = true {name}");
+            return;
+          }
+
+          if(positionType == null){
+            if(sonar.drawMarkersIn.ContainsKey(what)){
+              sonar.drawMarkersIn[what] = true;
+              log($"{what} markers {name} are revealed");
+            } else  log("no such mission");
+          } else {
+            if(sonar.allowedPositionsIn.ContainsKey(what)){
+              sonar.allowedPositionsIn[what][positionType] = true;
+              log($"{what} markers {name} in {positionType} are revealed");
+            } else log("no such mission or it doesn't have spawn positions");
           }
         }
       }},
@@ -183,14 +206,16 @@ namespace NoMarkersNamespace
         }
       }));
 
-      string[][] help = new string[][] {
+      string[][] hints = new string[][] {
         commands.Keys.ToArray(),
-        settings.HandheldSonar.drawMarkersIn.Keys.ToArray(),
-        new string[]{"onhandheldsonar","onstaticsonar"},
+        settings.HandheldSonar.drawMarkersIn.Keys.Concat(new string[]{"all","labels","caves","minerals","outposts","submarines","aitargets"}).ToArray(),
         allPositionTypes,
+        new string[]{"onhandheldsonar","onstaticsonar"},
       };
 
-      DebugConsole.Commands.Add(new DebugConsole.Command("sm", json(help), (string[] args) =>
+      string help = "sm hide/reveal what inWhichPosition onWhichSonar\n" + json(hints, true);
+
+      DebugConsole.Commands.Add(new DebugConsole.Command("sm", help, (string[] args) =>
       {
         if (args.Length == 0)
         {
@@ -204,7 +229,7 @@ namespace NoMarkersNamespace
         }
 
         settings.save();
-      }, () => help));
+      }, () => hints));
     }
 
     public static void removeCommands()

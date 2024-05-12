@@ -2,6 +2,11 @@
   "ModEnabled": true,
   "StaticSonar": {
     "showMarkersOnlyOnMouseHover": true,
+    "showCaveMarkers": false,
+    "showOutpostMarkers": false,
+    "showMinerals": false,
+    "showSumbarines": false,
+    "showAiTargets": false,
     "drawMarkersIn": {
       "ClearRuinMission": false,
       "BeaconMission": false,
@@ -42,6 +47,11 @@
   },
   "HandheldSonar": {
     "showMarkersOnlyOnMouseHover": true,
+    "showCaveMarkers": false,
+    "showOutpostMarkers": false,
+    "showMinerals": false,
+    "showSumbarines": false,
+    "showAiTargets": false,
     "drawMarkersIn": {
       "ClearRuinMission": false,
       "BeaconMission": false,

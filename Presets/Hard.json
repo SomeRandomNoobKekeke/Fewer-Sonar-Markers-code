@@ -2,6 +2,11 @@
   "ModEnabled": true,
   "StaticSonar": {
     "showMarkersOnlyOnMouseHover": true,
+    "showCaveMarkers": true,
+    "showOutpostMarkers": true,
+    "showMinerals": true,
+    "showSumbarines": true,
+    "showAiTargets": true,
     "drawMarkersIn": {
       "ClearRuinMission": true,
       "BeaconMission": false,
@@ -9,7 +14,7 @@
       "EndMission": true,
       "MineralMission": true,
       "MonsterMission": false,
-      "NestMission": true,
+      "NestMission": false,
       "PirateMission": false,
       "SalvageMission": true,
       "ScanMission": true
@@ -27,7 +32,7 @@
         "Abyss": true
       },
       "NestMission": {
-        "Cave": false,
+        "Cave": true,
         "Ruin": true
       },
       "SalvageMission": {
@@ -42,6 +47,11 @@
   },
   "HandheldSonar": {
     "showMarkersOnlyOnMouseHover": true,
+    "showCaveMarkers": true,
+    "showOutpostMarkers": true,
+    "showMinerals": false,
+    "showSumbarines": true,
+    "showAiTargets": true,
     "drawMarkersIn": {
       "ClearRuinMission": true,
       "BeaconMission": false,
@@ -49,7 +59,7 @@
       "EndMission": true,
       "MineralMission": true,
       "MonsterMission": false,
-      "NestMission": true,
+      "NestMission": false,
       "PirateMission": false,
       "SalvageMission": true,
       "ScanMission": true
@@ -67,7 +77,7 @@
         "Abyss": true
       },
       "NestMission": {
-        "Cave": false,
+        "Cave": true,
         "Ruin": true
       },
       "SalvageMission": {

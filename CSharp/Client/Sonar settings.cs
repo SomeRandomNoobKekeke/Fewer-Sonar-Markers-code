@@ -32,7 +32,11 @@ namespace NoMarkersNamespace
     public class SonarSettings
     {
       public bool showMarkersOnlyOnMouseHover { get; set; } = true;
-      //public bool hideCaveMarkers { get; set; } = false;
+      public bool showCaveMarkers { get; set; } = true;
+      public bool showOutpostMarkers { get; set; } = true;
+      public bool showMinerals { get; set; } = true;
+      public bool showSumbarines { get; set; } = true;
+      public bool showAiTargets { get; set; } = true;
       public Dictionary<string, bool> drawMarkersIn { get; set; } = new Dictionary<string, bool>(){
         {"ClearRuinMission",true},
         {"BeaconMission",true},

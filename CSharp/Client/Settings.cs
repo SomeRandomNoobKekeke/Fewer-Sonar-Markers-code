@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace NoMarkersNamespace
 {
@@ -47,12 +49,12 @@ namespace NoMarkersNamespace
         if (!File.Exists(Path.Combine(SettingsFolder, SettingsFileName))) settings.save();
       }
 
-      public void load(string path = "", bool verbose = false)
+      public void load(string path = "")
       {
         createStuffIfItDoesntExist();
 
         if (path == "") path = Path.Combine(SettingsFolder, SettingsFileName);
-        else verbose = true;
+        else log($"loading preset {path}");
 
         try
         {
@@ -61,8 +63,6 @@ namespace NoMarkersNamespace
           );
         }
         catch (Exception e) { log(e.Message, Color.Orange); }
-
-        if (verbose) log($"loaded {path}");
 
         if (String.Compare(settings.Version, ModVersion) < 0)
         {
