@@ -75,13 +75,14 @@ namespace NoMarkersNamespace
 
       public void save()
       {
-        createStuffIfItDoesntExist();
-
-        string path = Path.Combine(SettingsFolder, SettingsFileName);
-        File.WriteAllText(
-          Path.Combine(SettingsFolder, SettingsFileName),
-          JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true })
-        );
+        try
+        {
+          File.WriteAllText(
+            Path.Combine(SettingsFolder, SettingsFileName),
+            JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true })
+          );
+        }
+        catch (Exception e) { log(e.Message, Color.Orange); }
       }
     }
   }

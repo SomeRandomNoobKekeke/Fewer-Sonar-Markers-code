@@ -32,16 +32,24 @@ namespace NoMarkersNamespace
     public void Initialize()
     {
       harmony = new Harmony("no.markers");
-      figureOutModVersionAndDirPath();
+      try
+      {
+        figureOutModVersionAndDirPath();
 
-      settings = new Settings();
-      settings.load();
+        settings = new Settings();
+        settings.load();
 
-      addCommands();
+        addCommands();
 
-      patchAll();
+        patchAll();
 
-      if (ModStage == "debug") log("compiled!");
+        if (ModStage == "debug") log("compiled!");
+      }
+      catch (Exception e)
+      {
+        log("can't load Fewer Sonar Markers", Color.Orange);
+        log(e.Message, Color.Orange);
+      }
     }
 
     public void figureOutModVersionAndDirPath()
