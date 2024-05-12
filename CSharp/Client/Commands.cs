@@ -57,6 +57,10 @@ namespace NoMarkersNamespace
           modSonar("onstaticsonar");
         }
 
+        if(onWhichSonar != null && onWhichSonar != "onstaticsonar" && onWhichSonar != "onhandheldsonar"){
+          log("onWhichSonar?");
+        }
+
 
         void modSonar(string name){
           SonarSettings sonar = name =="onstaticsonar" ?  settings.StaticSonar : settings.HandheldSonar ;
@@ -95,7 +99,7 @@ namespace NoMarkersNamespace
             return;
           }
 
-          if(positionType == null){
+          if(positionType == null || positionType == "any" || !allPositionTypes.Contains(positionType)){
             if(sonar.drawMarkersIn.ContainsKey(what)){
               sonar.drawMarkersIn[what] = false;
               log($"{what} markers {name} are hidden");
@@ -104,7 +108,7 @@ namespace NoMarkersNamespace
             if(sonar.allowedPositionsIn.ContainsKey(what)){
               sonar.allowedPositionsIn[what][positionType] = false;
               log($"{what} markers {name} in {positionType} are hidden");
-            } else log("no such mission or it doesn't have spawn positions");
+            } else log("no such mission or it doesn't support this position");
           }
         }
       }},
@@ -128,6 +132,10 @@ namespace NoMarkersNamespace
 
         if(onWhichSonar == null || onWhichSonar == "onstaticsonar"){
           modSonar("onstaticsonar");
+        }
+
+        if(onWhichSonar != null && onWhichSonar != "onstaticsonar" && onWhichSonar != "onhandheldsonar"){
+          log("onWhichSonar?");
         }
 
 
@@ -168,7 +176,7 @@ namespace NoMarkersNamespace
             return;
           }
 
-          if(positionType == null){
+          if(positionType == null || positionType == "any" || !allPositionTypes.Contains(positionType)){
             if(sonar.drawMarkersIn.ContainsKey(what)){
               sonar.drawMarkersIn[what] = true;
               log($"{what} markers {name} are revealed");
@@ -177,7 +185,7 @@ namespace NoMarkersNamespace
             if(sonar.allowedPositionsIn.ContainsKey(what)){
               sonar.allowedPositionsIn[what][positionType] = true;
               log($"{what} markers {name} in {positionType} are revealed");
-            } else log("no such mission or it doesn't have spawn positions");
+            } else log("no such mission or it doesn't support this position");
           }
         }
       }},
@@ -209,7 +217,7 @@ namespace NoMarkersNamespace
       string[][] hints = new string[][] {
         commands.Keys.ToArray(),
         settings.HandheldSonar.drawMarkersIn.Keys.Concat(new string[]{"all","labels","caves","minerals","outposts","submarines","aitargets"}).ToArray(),
-        allPositionTypes,
+        allPositionTypes.Concat(new string[]{"any"}).ToArray(),
         new string[]{"onhandheldsonar","onstaticsonar"},
       };
 

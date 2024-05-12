@@ -23,7 +23,7 @@ namespace NoMarkersNamespace
     public static string ModName = "Fewer Sonar Markers";
     public static string ModDir = "";
 
-    public static string ModStage = "debug";
+    public static string ModStage = "flawless perfection";
 
     public static Settings settings;
 
@@ -40,8 +40,6 @@ namespace NoMarkersNamespace
       addCommands();
 
       patchAll();
-
-
 
       if (ModStage == "debug") log("compiled!");
     }
@@ -80,7 +78,9 @@ namespace NoMarkersNamespace
     public static void log(object msg, Color? cl = null, [CallerLineNumber] int lineNumber = 0)
     {
       if (cl == null) cl = Color.Cyan;
-      DebugConsole.NewMessage($"{lineNumber} {msg ?? "null"}", cl);
+      string line = "";
+      if (ModStage == "debug") line = $"{lineNumber} ";
+      DebugConsole.NewMessage($"{line}{msg ?? "null"}", cl);
     }
 
     public static string json(Object o, bool indent = false)
