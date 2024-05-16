@@ -33,17 +33,20 @@ namespace NoMarkersNamespace
 
         createFolders();
 
-        settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
+        Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
         Settings.save(settings);
 
         addCommands();
 
         patchAll();
 
-        GameMain.LuaCs.Networking.Receive("fsm_init", Settings.net_recieve_init);
-        GameMain.LuaCs.Networking.Receive("fsm_sync", Settings.net_recieve_sync);
+        if (GameMain.IsMultiplayer)
+        {
+          GameMain.LuaCs.Networking.Receive("fsm_init", Settings.net_recieve_init);
+          GameMain.LuaCs.Networking.Receive("fsm_sync", Settings.net_recieve_sync);
 
-        Settings.askServerForSettings();
+          Settings.askServerForSettings();
+        }
 
         if (ModStage == "debug") log("compiled!");
       }
