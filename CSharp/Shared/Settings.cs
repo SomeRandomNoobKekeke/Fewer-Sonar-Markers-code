@@ -17,6 +17,18 @@ namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
+    // this is relative to barotrauma folder
+    public static string ModSettingsFolder = "ModSettings\\";
+    public static string SettingsFolder = "ModSettings\\Fewer Sonar Markers\\";
+    public static string SettingsFileName = "Settings.json";
+    public static string PresetsFolder = "Presets";
+
+    public static void createFolders()
+    {
+      if (!Directory.Exists(ModSettingsFolder)) Directory.CreateDirectory(ModSettingsFolder);
+      if (!Directory.Exists(SettingsFolder)) Directory.CreateDirectory(SettingsFolder);
+    }
+
     public partial class Settings
     {
       public bool ModEnabled { get; set; } = true;
@@ -74,30 +86,10 @@ namespace NoMarkersNamespace
         catch (Exception e) { log(e, Color.Orange); }
       }
 
-      public static void sync(Settings s)
+      public static bool Compare(Settings a, Settings b)
       {
-        if (GameMain.IsSingleplayer) return;
-        if (GameMain.Client == null)
-        {
-          log("GameMain.Client == null");
-          return;
-        }
-
-        if (!GameMain.Client.IsServerOwner && !GameMain.Client.HasPermission(ClientPermissions.All))
-        {
-          log("you need to be host or have permission 'all' to use it");
-          return;
-        }
-
-        IWriteMessage message = GameMain.LuaCs.Networking.Start("fsm_sync");
-        Settings.encode(s, message);
-
-        if (ModStage == "debug") log("sync start");
-
-        GameMain.LuaCs.Networking.Send(message);
+        return json(a) == json(b);
       }
-
-
 
       public static void encode(Settings s, IWriteMessage msg)
       {
@@ -255,6 +247,7 @@ namespace NoMarkersNamespace
         s.Version = msg.ReadString();
       }
 
+      // never used
       public static void cloneMsg(IReadMessage source, IWriteMessage target)
       {
         for (int i = 0; i < 58; i++)

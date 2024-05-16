@@ -19,28 +19,14 @@ namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
+    public static Settings settings;
     public void Initialize()
     {
-      GameMain.LuaCs.Networking.Receive("fsm_sync", (object[] args) =>
-      {
-        if (ModStage == "debug") log("sync server");
+      settings = Settings.load();
 
-        IReadMessage netMessage = args[0] as IReadMessage;
-        Client client = args[1] as Client;
-
-        if (client.Connection != GameMain.Server.OwnerConnection && !client.HasPermission(ClientPermissions.All))
-        {
-          log($"{client.Name} tried to change fsm settings, but he doesn't have permission");
-          return;
-        }
-
-        IWriteMessage message = GameMain.LuaCs.Networking.Start("fsm_sync");
-        Settings.cloneMsg(netMessage, message);
-
-        GameMain.LuaCs.Networking.Send(message);
-      });
+      GameMain.LuaCs.Networking.Receive("fsm_init", Settings.net_recieve_init);
+      GameMain.LuaCs.Networking.Receive("fsm_sync", Settings.net_recieve_sync);
     }
-
 
     public void OnLoadCompleted() { }
     public void PreInitPatching() { }

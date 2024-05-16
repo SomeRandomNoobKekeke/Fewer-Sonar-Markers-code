@@ -30,7 +30,6 @@ namespace NoMarkersNamespace
         Settings.save(settings);
         log("loaded hard preset");
       }},
-
       {"hide",(string[] args)=>{
         string what = args.ElementAtOrDefault(0);
         string positionType = args.ElementAtOrDefault(1);
@@ -213,6 +212,11 @@ namespace NoMarkersNamespace
         }
       }));
 
+      DebugConsole.Commands.Add(new DebugConsole.Command("sm_log", "print settings", (string[] args) =>
+      {
+        log(json(settings, true));
+      }));
+
       DebugConsole.Commands.Add(new DebugConsole.Command("sm_save", "save settings to", (string[] args) =>
       {
         string path = Path.Combine(SettingsFolder, SettingsFileName);
@@ -225,6 +229,12 @@ namespace NoMarkersNamespace
 
       DebugConsole.Commands.Add(new DebugConsole.Command("sm_load", "load settings from", (string[] args) =>
       {
+        if (GameMain.IsMultiplayer && !GameMain.Client.IsServerOwner && !GameMain.Client.HasPermission(ClientPermissions.All))
+        {
+          log("you need to be host or have permission 'all' to use it");
+          return;
+        }
+
         string path = Path.Combine(SettingsFolder, SettingsFileName);
         if (args.Length > 0) path = Path.Combine(SettingsFolder, $"{args[0]}.json");
 
@@ -237,7 +247,10 @@ namespace NoMarkersNamespace
         settings = Settings.load(path);
 
         log($"settings loaded from {path}");
+        if (GameMain.IsMultiplayer) Settings.sync(settings);
       }));
+
+
 
       string[][] hints = new string[][] {
         subCommands.Keys.ToArray(),
@@ -250,6 +263,12 @@ namespace NoMarkersNamespace
 
       DebugConsole.Commands.Add(new DebugConsole.Command("sm", help, (string[] args) =>
       {
+        if (GameMain.IsMultiplayer && !GameMain.Client.IsServerOwner && !GameMain.Client.HasPermission(ClientPermissions.All))
+        {
+          log("you need to be host or have permission 'all' to use it");
+          return;
+        }
+
         if (args.Length == 0)
         {
           settings.ModEnabled = !settings.ModEnabled;
@@ -273,6 +292,7 @@ namespace NoMarkersNamespace
       DebugConsole.Commands.RemoveAll(c => c.Names.Contains("sm"));
       DebugConsole.Commands.RemoveAll(c => c.Names.Contains("sm_save"));
       DebugConsole.Commands.RemoveAll(c => c.Names.Contains("sm_load"));
+      DebugConsole.Commands.RemoveAll(c => c.Names.Contains("sm_log"));
     }
 
     public static void permitCommands(Identifier command, ref bool __result)
@@ -281,6 +301,7 @@ namespace NoMarkersNamespace
       if (command.Value == "sm") __result = true;
       if (command.Value == "sm_save") __result = true;
       if (command.Value == "sm_load") __result = true;
+      if (command.Value == "sm_log") __result = true;
     }
   }
 }

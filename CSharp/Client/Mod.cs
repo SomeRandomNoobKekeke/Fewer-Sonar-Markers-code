@@ -20,12 +20,6 @@ namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
-    public static string ModVersion = "1.0.0";
-    public static string ModName = "Fewer Sonar Markers";
-    public static string ModDir = "";
-
-
-
     public static Settings settings;
 
     public Harmony harmony;
@@ -46,16 +40,10 @@ namespace NoMarkersNamespace
 
         patchAll();
 
-        GameMain.LuaCs.Networking.Receive("fsm_sync", (object[] args) =>
-        {
-          if (ModStage == "debug") log("sync client");
+        GameMain.LuaCs.Networking.Receive("fsm_init", Settings.net_recieve_init);
+        GameMain.LuaCs.Networking.Receive("fsm_sync", Settings.net_recieve_sync);
 
-          IReadMessage netMessage = args[0] as IReadMessage;
-          Client client = args[1] as Client;
-
-          Settings.decode(settings, netMessage);
-          log("Sonar markers settings changed");
-        });
+        Settings.askServerForSettings();
 
         if (ModStage == "debug") log("compiled!");
       }
@@ -64,24 +52,6 @@ namespace NoMarkersNamespace
         log("can't load Fewer Sonar Markers", Color.Orange);
         log(e, Color.Orange);
       }
-    }
-
-    public void figureOutModVersionAndDirPath()
-    {
-      bool found = false;
-
-      foreach (ContentPackage p in ContentPackageManager.EnabledPackages.All)
-      {
-        if (p.Name.Contains(ModName))
-        {
-          found = true;
-          ModVersion = p.ModVersion;
-          ModDir = Path.GetFullPath(p.Dir);
-          break;
-        }
-      }
-
-      if (!found) log($"Couldn't figure out {ModName} mod folder", Color.Orange);
     }
 
     public void patchAll()

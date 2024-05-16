@@ -50,7 +50,7 @@ namespace NoMarkersNamespace
       };
       public Dictionary<string, Dictionary<string, bool>> allowedPositionsIn { get; set; } = new Dictionary<string, Dictionary<string, bool>>(){
         {"MineralMission", new Dictionary<string, bool>() {
-          {"Cave",true},
+          {"Cave",false},
           {"SidePath",true},
           {"MainPath",true},
           {"AbyssCave",true},
@@ -61,12 +61,12 @@ namespace NoMarkersNamespace
           {"Abyss",true},
         }},
         {"NestMission", new Dictionary<string, bool>() {
-          {"Cave",true},
+          {"Cave",false},
           {"Ruin",true},
         }},
         {"SalvageMission", new Dictionary<string, bool>() {
           {"Ruin",true},
-          {"Cave",true},
+          {"Cave",false},
           {"AbyssCave",true},
           {"Wreck",true},
           {"Outpost",true},

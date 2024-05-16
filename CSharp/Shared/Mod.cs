@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using System.IO;
 using Barotrauma.Networking;
 
 [assembly: IgnoresAccessChecksTo("Barotrauma")]
@@ -17,11 +18,37 @@ namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
+
+    public static string ModVersion = "1.0.0";
+    public static string ModName = "Fewer Sonar Markers";
+    public static string ModDir = "";
     public static string ModStage = "acceptable";
+
+    public void figureOutModVersionAndDirPath()
+    {
+      bool found = false;
+
+      foreach (ContentPackage p in ContentPackageManager.EnabledPackages.All)
+      {
+        if (p.Name.Contains(ModName))
+        {
+          found = true;
+          ModVersion = p.ModVersion;
+          ModDir = Path.GetFullPath(p.Dir);
+          break;
+        }
+      }
+
+      if (!found) log($"Couldn't figure out {ModName} mod folder", Color.Orange);
+    }
 
     public static void log(object msg, Color? cl = null, [CallerLineNumber] int lineNumber = 0)
     {
+#if CLIENT
       if (cl == null) cl = Color.Cyan;
+#else
+      if (cl == null) cl = Color.Pink;
+#endif
       string line = "";
       if (ModStage == "debug") line = $"{lineNumber} ";
       LuaCsLogger.LogMessage($"{line}{msg ?? "null"}", cl, cl);
