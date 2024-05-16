@@ -12,27 +12,23 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
+using Barotrauma.Networking;
+
 namespace NoMarkersNamespace
 {
   public partial class Mod : IAssemblyPlugin
   {
-    public static Dictionary<string, Action<string[]>> commands = new Dictionary<string, Action<string[]>>()
+    public static Dictionary<string, Action<string[]>> subCommands = new Dictionary<string, Action<string[]>>()
     {
-      {"load",(string[] args)=>{
-        settings.load();
-        log("Settings loaded");
-      }},
-      {"save",(string[] args)=>{
-        settings.save();
-        log("Settings saved");
-      }},
       {"hard",(string[] args)=>{
-        settings.load(Path.Combine(ModDir, PresetsFolder, "Hard.json"));
-        settings.save();
+        settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Hard.json"));
+        Settings.save(settings);
+        log("loaded hard preset");
       }},
       {"easy",(string[] args)=>{
-        settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
-        settings.save();
+        settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
+        Settings.save(settings);
+        log("loaded hard preset");
       }},
 
       {"hide",(string[] args)=>{
@@ -44,8 +40,9 @@ namespace NoMarkersNamespace
         if(what == null) { log("hide what?"); return;}
 
         if(what == "all"){
-          settings.load(Path.Combine(ModDir, PresetsFolder, "Hide all.json"));
-          settings.save();
+          settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Hide all.json"));
+          Settings.save(settings);
+          log("All sonar markers are hidden");
           return;
         }
 
@@ -121,8 +118,9 @@ namespace NoMarkersNamespace
         if(what == null) { log("reveal what?"); return;}
 
         if(what == "all"){
-          settings.load(Path.Combine(ModDir, PresetsFolder, "Reveal all.json"));
-          settings.save();
+          settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Reveal all.json"));
+          Settings.save(settings);
+          log("All sonar markers are revealed");
           return;
         }
 
@@ -184,6 +182,7 @@ namespace NoMarkersNamespace
           } else {
             if(sonar.allowedPositionsIn.ContainsKey(what)){
               sonar.allowedPositionsIn[what][positionType] = true;
+              sonar.drawMarkersIn[what] = true;
               log($"{what} markers {name} in {positionType} are revealed");
             } else log("no such mission or it doesn't support this position");
           }
@@ -214,8 +213,34 @@ namespace NoMarkersNamespace
         }
       }));
 
+      DebugConsole.Commands.Add(new DebugConsole.Command("sm_save", "save settings to", (string[] args) =>
+      {
+        string path = Path.Combine(SettingsFolder, SettingsFileName);
+        if (args.Length > 0) path = Path.Combine(SettingsFolder, $"{args[0]}.json");
+
+        Settings.save(settings, path);
+
+        log($"settings saved to {path}");
+      }));
+
+      DebugConsole.Commands.Add(new DebugConsole.Command("sm_load", "load settings from", (string[] args) =>
+      {
+        string path = Path.Combine(SettingsFolder, SettingsFileName);
+        if (args.Length > 0) path = Path.Combine(SettingsFolder, $"{args[0]}.json");
+
+        if (!File.Exists(path))
+        {
+          log("no such file");
+          return;
+        }
+
+        settings = Settings.load(path);
+
+        log($"settings loaded from {path}");
+      }));
+
       string[][] hints = new string[][] {
-        commands.Keys.ToArray(),
+        subCommands.Keys.ToArray(),
         settings.HandheldSonar.drawMarkersIn.Keys.Concat(new string[]{"all","labels","caves","minerals","outposts","submarines","aitargets"}).ToArray(),
         allPositionTypes.Concat(new string[]{"any"}).ToArray(),
         new string[]{"onhandheldsonar","onstaticsonar"},
@@ -233,10 +258,12 @@ namespace NoMarkersNamespace
 
         if (args.Length > 0)
         {
-          if (commands.TryGetValue(args[0], out var com)) com(args.Skip(1).ToArray());
+          if (subCommands.TryGetValue(args[0], out var com)) com(args.Skip(1).ToArray());
         }
 
-        settings.save();
+        Settings.save(settings);
+
+        if (GameMain.IsMultiplayer) Settings.sync(settings);
       }, () => hints));
     }
 
@@ -244,12 +271,16 @@ namespace NoMarkersNamespace
     {
       DebugConsole.Commands.RemoveAll(c => c.Names.Contains("debugmissions"));
       DebugConsole.Commands.RemoveAll(c => c.Names.Contains("sm"));
+      DebugConsole.Commands.RemoveAll(c => c.Names.Contains("sm_save"));
+      DebugConsole.Commands.RemoveAll(c => c.Names.Contains("sm_load"));
     }
 
     public static void permitCommands(Identifier command, ref bool __result)
     {
       if (command.Value == "debugmissions") __result = true;
       if (command.Value == "sm") __result = true;
+      if (command.Value == "sm_save") __result = true;
+      if (command.Value == "sm_load") __result = true;
     }
   }
 }

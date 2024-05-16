@@ -10,6 +10,7 @@ using System.IO;
 using Barotrauma.Items.Components;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Barotrauma.Networking;
 
 [assembly: IgnoresAccessChecksTo("Barotrauma")]
 [assembly: IgnoresAccessChecksTo("DedicatedServer")]
@@ -23,7 +24,7 @@ namespace NoMarkersNamespace
     public static string ModName = "Fewer Sonar Markers";
     public static string ModDir = "";
 
-    public static string ModStage = "flawless perfection";
+
 
     public static Settings settings;
 
@@ -36,25 +37,39 @@ namespace NoMarkersNamespace
       {
         figureOutModVersionAndDirPath();
 
-        settings = new Settings();
-        settings.load();
+        createFolders();
+
+        settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
+        Settings.save(settings);
 
         addCommands();
 
         patchAll();
+
+        GameMain.LuaCs.Networking.Receive("fsm_sync", (object[] args) =>
+        {
+          if (ModStage == "debug") log("sync client");
+
+          IReadMessage netMessage = args[0] as IReadMessage;
+          Client client = args[1] as Client;
+
+          Settings.decode(settings, netMessage);
+          log("Sonar markers settings changed");
+        });
 
         if (ModStage == "debug") log("compiled!");
       }
       catch (Exception e)
       {
         log("can't load Fewer Sonar Markers", Color.Orange);
-        log(e.Message, Color.Orange);
+        log(e, Color.Orange);
       }
     }
 
     public void figureOutModVersionAndDirPath()
     {
       bool found = false;
+
       foreach (ContentPackage p in ContentPackageManager.EnabledPackages.All)
       {
         if (p.Name.Contains(ModName))
@@ -80,21 +95,6 @@ namespace NoMarkersNamespace
         original: typeof(LuaGame).GetMethod("IsCustomCommandPermitted"),
         postfix: new HarmonyMethod(typeof(Mod).GetMethod("permitCommands"))
       );
-    }
-
-
-    public static void log(object msg, Color? cl = null, [CallerLineNumber] int lineNumber = 0)
-    {
-      if (cl == null) cl = Color.Cyan;
-      string line = "";
-      if (ModStage == "debug") line = $"{lineNumber} ";
-      DebugConsole.NewMessage($"{line}{msg ?? "null"}", cl);
-    }
-
-    public static string json(Object o, bool indent = false)
-    {
-      try { return JsonSerializer.Serialize(o, new JsonSerializerOptions { WriteIndented = indent }); }
-      catch (Exception e) { if (ModStage == "debug") log(e); return ""; }
     }
 
     public void OnLoadCompleted() { }
