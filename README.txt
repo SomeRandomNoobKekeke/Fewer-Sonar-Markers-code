@@ -3,6 +3,8 @@ Mod is serverside now
 
 You can hide all marks of some type, in some specific mission, in some specific positions (e.g. cave), and on some type of sonar
 
+By default it hides labels and missions in caves (aka preset easy)
+
 Settings are stored in "barotrauma folder"\ModSettings\Fewer Sonar Markers\Settings.json
 You can edit it with any text editor or with commands
 
