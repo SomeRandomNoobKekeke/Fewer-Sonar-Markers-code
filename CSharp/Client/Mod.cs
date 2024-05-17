@@ -77,6 +77,7 @@ namespace NoMarkersNamespace
       harmony.UnpatchAll(harmony.Id);
       harmony = null;
       removeCommands();
+      settings = null;
     }
   }
 

@@ -33,6 +33,9 @@ namespace NoMarkersNamespace
     public void OnLoadCompleted() { }
     public void PreInitPatching() { }
 
-    public void Dispose() { }
+    public void Dispose()
+    {
+      settings = null;
+    }
   }
 }
