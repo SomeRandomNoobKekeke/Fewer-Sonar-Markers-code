@@ -21,12 +21,12 @@ namespace NoMarkersNamespace
     public static Dictionary<string, Action<string[]>> subCommands = new Dictionary<string, Action<string[]>>()
     {
       {"hard",(string[] args)=>{
-        Settings.load(Path.Combine(ModDir, PresetsFolder, "Hard.json"));
+        settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Hard.json"));
         Settings.save(settings);
         log("loaded hard preset");
       }},
       {"easy",(string[] args)=>{
-        Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
+        settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
         Settings.save(settings);
         log("loaded hard preset");
       }},
@@ -39,7 +39,7 @@ namespace NoMarkersNamespace
         if(what == null) { log("hide what?"); return;}
 
         if(what == "all"){
-          Settings.load(Path.Combine(ModDir, PresetsFolder, "Hide all.json"));
+          settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Hide all.json"));
           Settings.save(settings);
           log("All sonar markers are hidden");
           return;
@@ -117,7 +117,7 @@ namespace NoMarkersNamespace
         if(what == null) { log("reveal what?"); return;}
 
         if(what == "all"){
-          Settings.load(Path.Combine(ModDir, PresetsFolder, "Reveal all.json"));
+          settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Reveal all.json"));
           Settings.save(settings);
           log("All sonar markers are revealed");
           return;
@@ -244,7 +244,7 @@ namespace NoMarkersNamespace
           return;
         }
 
-        Settings.load(path);
+        settings = Settings.load(path);
 
         log($"settings loaded from {path}");
         if (GameMain.IsMultiplayer) Settings.sync(settings);

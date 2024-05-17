@@ -30,10 +30,9 @@ namespace NoMarkersNamespace
       try
       {
         figureOutModVersionAndDirPath();
-
         createFolders();
 
-        Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
+        settings = Settings.load();
         Settings.save(settings);
 
         addCommands();

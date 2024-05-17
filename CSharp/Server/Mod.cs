@@ -22,7 +22,9 @@ namespace NoMarkersNamespace
     public static Settings settings;
     public void Initialize()
     {
-      Settings.load();
+      figureOutModVersionAndDirPath();
+      createFolders();
+      settings = Settings.load();
 
       GameMain.LuaCs.Networking.Receive("fsm_init", Settings.net_recieve_init);
       GameMain.LuaCs.Networking.Receive("fsm_sync", Settings.net_recieve_sync);

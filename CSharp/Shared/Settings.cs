@@ -38,43 +38,40 @@ namespace NoMarkersNamespace
       public bool showMissionsWithPositionCaveIfTheyAreNotRegisteredInTheirCaveForSomeReason { get; set; } = true;
       public string Version { get; set; } = "0.0.0";
 
+      public Settings()
+      {
+        this.Version = ModVersion;
+      }
 
       public static void forceChangeSomething()
       {
         // nothing yet
       }
 
-      public static void load(string path = "")
+      public static Settings load(string path = "")
       {
         if (path == "") path = Path.Combine(SettingsFolder, SettingsFileName);
 
-        if (settings == null) settings = new Settings();
-
-
-        log(settings.HandheldSonar.allowedPositionsIn["SalvageMission"]["AbyssCave"]);
+        Settings newSettings = new Settings();
 
         if (File.Exists(path))
         {
           try
           {
-            settings = JsonSerializer.Deserialize<Settings>(
+            newSettings = JsonSerializer.Deserialize<Settings>(
               File.ReadAllText(path)
             );
           }
           catch (Exception e) { log(e, Color.Orange); }
 
-          log((settings.Version, ModVersion));
-
-          if (String.Compare(settings.Version, ModVersion) < 0)
+          if (String.Compare(newSettings.Version, ModVersion) < 0)
           {
-            log("setings outdated");
-            settings.Version = ModVersion;
+            newSettings.Version = ModVersion;
             forceChangeSomething();
           }
         }
 
-        log(settings.HandheldSonar.allowedPositionsIn["SalvageMission"]["AbyssCave"]);
-
+        return newSettings;
       }
 
       public static void save(Settings s, string path = "")
