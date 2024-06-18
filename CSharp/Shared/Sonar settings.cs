@@ -66,7 +66,7 @@ namespace NoMarkersNamespace
         }},
         {"SalvageMission", new Dictionary<string, bool>() {
           {"Ruin",true},
-          {"Cave",false},
+          {"Cave",true},
           {"AbyssCave",true},
           {"Wreck",true},
           {"Outpost",true},

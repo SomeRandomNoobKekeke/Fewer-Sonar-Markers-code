@@ -39,7 +39,7 @@ namespace NoMarkersNamespace
           return true;
         };
 
-        if (mission is AlienRuinMission)
+        if (mission is EliminateTargetsMission )
         {
           if (!mySettings.drawMarkersIn["ClearRuinMission"]) return false;
           return true;
