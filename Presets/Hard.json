@@ -9,7 +9,8 @@
     "showAiTargets": true,
     "drawMarkersIn": {
       "ClearRuinMission": true,
-      "BeaconMission": false,
+      "ClearThalamusMission": true,
+      "BeaconMission": true,
       "AbandonedOutpostMission": true,
       "EndMission": true,
       "MineralMission": true,
@@ -54,7 +55,8 @@
     "showAiTargets": true,
     "drawMarkersIn": {
       "ClearRuinMission": true,
-      "BeaconMission": false,
+      "ClearThalamusMission": true,
+      "BeaconMission": true,
       "AbandonedOutpostMission": true,
       "EndMission": true,
       "MineralMission": true,

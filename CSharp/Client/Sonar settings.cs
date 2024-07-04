@@ -21,7 +21,7 @@ using Barotrauma.Items.Components;
 
 using PositionType = Barotrauma.Level.PositionType;
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
@@ -35,31 +35,34 @@ namespace NoMarkersNamespace
       {
         if (mission is AbandonedOutpostMission)
         {
-          if (!mySettings.drawMarkersIn["AbandonedOutpostMission"]) return false;
+          if (!mySettings.drawMarkersIn.AbandonedOutpostMission) return false;
           return true;
         };
 
-        if (mission is EliminateTargetsMission )
+        if (mission is EliminateTargetsMission etm)
         {
-          if (!mySettings.drawMarkersIn["ClearRuinMission"]) return false;
+          if (etm.TargetSubType == SubmarineType.Wreck && !mySettings.drawMarkersIn.ClearThalamusMission) return false;
+
+          if (etm.TargetSubType == SubmarineType.Ruin && !mySettings.drawMarkersIn.ClearRuinMission) return false;
+
           return true;
         };
 
         if (mission is BeaconMission)
         {
-          if (!mySettings.drawMarkersIn["BeaconMission"]) return false;
+          if (!mySettings.drawMarkersIn.BeaconMission) return false;
           return true;
         };
 
         if (mission is EndMission)
         {
-          if (!mySettings.drawMarkersIn["EndMission"]) return false;
+          if (!mySettings.drawMarkersIn.EndMission) return false;
           return true;
         };
 
         if (mission is MineralMission mm)
         {
-          if (!mySettings.drawMarkersIn["MineralMission"]) return false;
+          if (!mySettings.drawMarkersIn.MineralMission) return false;
 
           if (!mySettings.allowedPositionsIn["MineralMission"][$"{mm.positionType}"])
           {
@@ -73,7 +76,7 @@ namespace NoMarkersNamespace
 
         if (mission is MonsterMission monm)
         {
-          if (!mySettings.drawMarkersIn["MonsterMission"]) return false;
+          if (!mySettings.drawMarkersIn.MonsterMission) return false;
 
           string[] pos = $"{monm.spawnPosType}".Split(", ");
           if (!pos.Any((p) => mySettings.allowedPositionsIn["MonsterMission"][p])) return false;
@@ -82,7 +85,7 @@ namespace NoMarkersNamespace
 
         if (mission is NestMission nm)
         {
-          if (!mySettings.drawMarkersIn["NestMission"]) return false;
+          if (!mySettings.drawMarkersIn.NestMission) return false;
 
           string[] pos = $"{nm.spawnPositionType}".Split(", ");
 
@@ -98,13 +101,13 @@ namespace NoMarkersNamespace
 
         if (mission is PirateMission)
         {
-          if (!mySettings.drawMarkersIn["PirateMission"]) return false;
+          if (!mySettings.drawMarkersIn.PirateMission) return false;
           return true;
         };
 
         if (mission is SalvageMission sm)
         {
-          if (!mySettings.drawMarkersIn["SalvageMission"]) return false;
+          if (!mySettings.drawMarkersIn.SalvageMission) return false;
 
           string[] pos = $"{sm.targets.First().SpawnPositionType}".Split(", ");
 
@@ -115,7 +118,7 @@ namespace NoMarkersNamespace
 
         if (mission is ScanMission)
         {
-          if (!mySettings.drawMarkersIn["ScanMission"]) return false;
+          if (!mySettings.drawMarkersIn.ScanMission) return false;
           return true;
         };
 
@@ -123,12 +126,12 @@ namespace NoMarkersNamespace
       }
       catch (Exception e)
       {
-        if (ModStage == "debug" && !once)
+        if (!once)
         {
           once = true;
-          log(e);
-          log(mission);
-          log(json(settings, true));
+          err(e);
+          err(mission);
+          err(json(settings, true));
         }
         return true;
       }

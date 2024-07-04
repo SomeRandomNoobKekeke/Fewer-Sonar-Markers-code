@@ -13,7 +13,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Barotrauma.Networking;
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
@@ -21,7 +21,7 @@ namespace NoMarkersNamespace
     {
       public static void net_recieve_init(object[] args)
       {
-        if (ModStage == "debug") log("net_recieve_init server");
+        info("net_recieve_init server");
         IReadMessage netMessage = args[0] as IReadMessage;
         Client client = args[1] as Client;
 
@@ -33,7 +33,7 @@ namespace NoMarkersNamespace
 
       public static void net_recieve_sync(object[] args)
       {
-        if (ModStage == "debug") log("net_recieve_sync server");
+        info("net_recieve_sync server");
 
         IReadMessage inMsg = args[0] as IReadMessage;
         Client client = args[1] as Client;

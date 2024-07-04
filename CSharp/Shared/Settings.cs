@@ -13,7 +13,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Barotrauma.Networking;
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
@@ -43,9 +43,9 @@ namespace NoMarkersNamespace
         this.Version = ModVersion;
       }
 
-      public static void forceChangeSomething()
+      public static void forceChangeSomething(Settings newSettings)
       {
-        // nothing yet
+
       }
 
       public static Settings load(string path = "")
@@ -67,7 +67,7 @@ namespace NoMarkersNamespace
           if (String.Compare(newSettings.Version, ModVersion) < 0)
           {
             newSettings.Version = ModVersion;
-            forceChangeSomething();
+            forceChangeSomething(newSettings);
           }
         }
 
@@ -103,16 +103,17 @@ namespace NoMarkersNamespace
         msg.WriteBoolean(s.StaticSonar.showSumbarines);
 
         // StaticSonar
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["ClearRuinMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["BeaconMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["AbandonedOutpostMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["EndMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["MineralMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["MonsterMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["NestMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["PirateMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["SalvageMission"]);
-        msg.WriteBoolean(s.StaticSonar.drawMarkersIn["ScanMission"]);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.ClearRuinMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.ClearThalamusMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.BeaconMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.AbandonedOutpostMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.EndMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.MineralMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.MonsterMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.NestMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.PirateMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.SalvageMission);
+        msg.WriteBoolean(s.StaticSonar.drawMarkersIn.ScanMission);
 
         msg.WriteBoolean(s.StaticSonar.allowedPositionsIn["MineralMission"]["Cave"]);
         msg.WriteBoolean(s.StaticSonar.allowedPositionsIn["MineralMission"]["SidePath"]);
@@ -135,16 +136,17 @@ namespace NoMarkersNamespace
 
 
         // HandheldSonar
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["ClearRuinMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["BeaconMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["AbandonedOutpostMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["EndMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["MineralMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["MonsterMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["NestMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["PirateMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["SalvageMission"]);
-        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn["ScanMission"]);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.ClearRuinMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.ClearThalamusMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.BeaconMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.AbandonedOutpostMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.EndMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.MineralMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.MonsterMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.NestMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.PirateMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.SalvageMission);
+        msg.WriteBoolean(s.HandheldSonar.drawMarkersIn.ScanMission);
 
         msg.WriteBoolean(s.HandheldSonar.allowedPositionsIn["MineralMission"]["Cave"]);
         msg.WriteBoolean(s.HandheldSonar.allowedPositionsIn["MineralMission"]["SidePath"]);
@@ -181,16 +183,17 @@ namespace NoMarkersNamespace
         s.StaticSonar.showSumbarines = msg.ReadBoolean();
 
         // StaticSonar
-        s.StaticSonar.drawMarkersIn["ClearRuinMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["BeaconMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["AbandonedOutpostMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["EndMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["MineralMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["MonsterMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["NestMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["PirateMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["SalvageMission"] = msg.ReadBoolean();
-        s.StaticSonar.drawMarkersIn["ScanMission"] = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.ClearRuinMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.ClearThalamusMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.BeaconMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.AbandonedOutpostMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.EndMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.MineralMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.MonsterMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.NestMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.PirateMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.SalvageMission = msg.ReadBoolean();
+        s.StaticSonar.drawMarkersIn.ScanMission = msg.ReadBoolean();
 
         s.StaticSonar.allowedPositionsIn["MineralMission"]["Cave"] = msg.ReadBoolean();
         s.StaticSonar.allowedPositionsIn["MineralMission"]["SidePath"] = msg.ReadBoolean();
@@ -213,16 +216,17 @@ namespace NoMarkersNamespace
 
 
         // HandheldSonar
-        s.HandheldSonar.drawMarkersIn["ClearRuinMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["BeaconMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["AbandonedOutpostMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["EndMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["MineralMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["MonsterMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["NestMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["PirateMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["SalvageMission"] = msg.ReadBoolean();
-        s.HandheldSonar.drawMarkersIn["ScanMission"] = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.ClearRuinMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.ClearThalamusMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.BeaconMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.AbandonedOutpostMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.EndMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.MineralMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.MonsterMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.NestMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.PirateMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.SalvageMission = msg.ReadBoolean();
+        s.HandheldSonar.drawMarkersIn.ScanMission = msg.ReadBoolean();
 
         s.HandheldSonar.allowedPositionsIn["MineralMission"]["Cave"] = msg.ReadBoolean();
         s.HandheldSonar.allowedPositionsIn["MineralMission"]["SidePath"] = msg.ReadBoolean();

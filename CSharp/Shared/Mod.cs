@@ -14,7 +14,7 @@ using Barotrauma.Networking;
 [assembly: IgnoresAccessChecksTo("DedicatedServer")]
 [assembly: IgnoresAccessChecksTo("BarotraumaCore")]
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
@@ -22,7 +22,7 @@ namespace NoMarkersNamespace
     public static string ModVersion = "1.0.0";
     public static string ModName = "Fewer Sonar Markers";
     public static string ModDir = "";
-    public static string ModStage = "acceptable";
+    public static bool debug = true;
 
     public void figureOutModVersionAndDirPath()
     {
@@ -42,64 +42,21 @@ namespace NoMarkersNamespace
       if (!found) log($"Couldn't figure out {ModName} mod folder", Color.Orange);
     }
 
-    public static void log(object msg, Color? cl = null, [CallerLineNumber] int lineNumber = 0)
+    public static void log(object msg, Color? cl = null, string line = "")
     {
-#if CLIENT
       if (cl == null) cl = Color.Cyan;
-#else
-      if (cl == null) cl = Color.Pink;
+#if SERVER
+      cl *= 0.8f;
 #endif
-      string line = "";
-      if (ModStage == "debug") line = $"{lineNumber} ";
       LuaCsLogger.LogMessage($"{line}{msg ?? "null"}", cl, cl);
     }
+    public static void info(object msg, [CallerLineNumber] int lineNumber = 0) { if (debug) log(msg, Color.Cyan, $"{lineNumber}| "); }
+    public static void err(object msg, [CallerLineNumber] int lineNumber = 0) { if (debug) log(msg, Color.Orange, $"{lineNumber}| "); }
 
     public static string json(Object o, bool indent = false)
     {
       try { return JsonSerializer.Serialize(o, new JsonSerializerOptions { WriteIndented = indent }); }
-      catch (Exception e) { if (ModStage == "debug") log(e); return ""; }
+      catch (Exception e) { err(e); return ""; }
     }
-
-    public static string Base64Encode(string plainText)
-    {
-      var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-      return System.Convert.ToBase64String(plainTextBytes);
-    }
-
-    public static string Base64Decode(string base64EncodedData)
-    {
-      var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
-      return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-    }
-
-    public static byte ConvertBoolArrayToByte(bool[] source)
-    {
-      byte result = 0;
-      int index = 8 - source.Length;
-
-      foreach (bool b in source)
-      {
-        if (b)
-          result |= (byte)(1 << (7 - index));
-
-        index++;
-      }
-
-      return result;
-    }
-
-    public static bool[] ConvertByteToBoolArray(byte b)
-    {
-      bool[] result = new bool[8];
-
-      for (int i = 0; i < 8; i++)
-        result[i] = (b & (1 << i)) != 0;
-
-      Array.Reverse(result);
-
-      return result;
-    }
-
-
   }
 }

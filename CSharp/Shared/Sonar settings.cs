@@ -20,13 +20,28 @@ using Barotrauma.Items.Components;
 
 using PositionType = Barotrauma.Level.PositionType;
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
     public static string[] allPositionTypes = new string[]{
       "None","MainPath","SidePath","Cave","Ruin","Wreck","BeaconStation","Abyss","AbyssCave","Outpost",
     };
+
+    public class DrawMarkersInSettings // omg
+    {
+      public bool ClearRuinMission { get; set; } = true;
+      public bool ClearThalamusMission { get; set; } = true;
+      public bool BeaconMission { get; set; } = true;
+      public bool AbandonedOutpostMission { get; set; } = true;
+      public bool EndMission { get; set; } = true;
+      public bool MineralMission { get; set; } = true;
+      public bool MonsterMission { get; set; } = true;
+      public bool NestMission { get; set; } = true;
+      public bool PirateMission { get; set; } = true;
+      public bool SalvageMission { get; set; } = true;
+      public bool ScanMission { get; set; } = true;
+    }
 
     public class SonarSettings
     {
@@ -36,18 +51,7 @@ namespace NoMarkersNamespace
       public bool showMinerals { get; set; } = true;
       public bool showSumbarines { get; set; } = true;
       public bool showAiTargets { get; set; } = true;
-      public Dictionary<string, bool> drawMarkersIn { get; set; } = new Dictionary<string, bool>(){
-        {"ClearRuinMission",true},
-        {"BeaconMission",true},
-        {"AbandonedOutpostMission",true},
-        {"EndMission",true},
-        {"MineralMission",true},
-        {"MonsterMission",true},
-        {"NestMission",true},
-        {"PirateMission",true},
-        {"SalvageMission",true},
-        {"ScanMission",true},
-      };
+      public DrawMarkersInSettings drawMarkersIn { get; set; } = new DrawMarkersInSettings();
       public Dictionary<string, Dictionary<string, bool>> allowedPositionsIn { get; set; } = new Dictionary<string, Dictionary<string, bool>>(){
         {"MineralMission", new Dictionary<string, bool>() {
           {"Cave",false},

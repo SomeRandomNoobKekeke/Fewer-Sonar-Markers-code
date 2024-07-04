@@ -17,7 +17,7 @@ using Barotrauma.Items.Components;
 
 using PositionType = Barotrauma.Level.PositionType;
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {

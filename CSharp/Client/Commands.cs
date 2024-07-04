@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 using Barotrauma.Networking;
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
@@ -28,7 +28,7 @@ namespace NoMarkersNamespace
       {"easy",(string[] args)=>{
         settings = Settings.load(Path.Combine(ModDir, PresetsFolder, "Easy.json"));
         Settings.save(settings);
-        log("loaded hard preset");
+        log("loaded easy preset");
       }},
       {"hide",(string[] args)=>{
         string what = args.ElementAtOrDefault(0);
@@ -96,8 +96,10 @@ namespace NoMarkersNamespace
           }
 
           if(positionType == null || positionType == "any" || !allPositionTypes.Contains(positionType)){
-            if(sonar.drawMarkersIn.ContainsKey(what)){
-              sonar.drawMarkersIn[what] = false;
+            PropertyInfo prop = typeof(DrawMarkersInSettings).GetProperty(what);
+
+            if(prop != null){
+              prop.SetValue(sonar.drawMarkersIn, false);
               log($"{what} markers {name} are hidden");
             } else  log("no such mission");
           } else {
@@ -174,14 +176,17 @@ namespace NoMarkersNamespace
           }
 
           if(positionType == null || positionType == "any" || !allPositionTypes.Contains(positionType)){
-            if(sonar.drawMarkersIn.ContainsKey(what)){
-              sonar.drawMarkersIn[what] = true;
+            PropertyInfo prop = typeof(DrawMarkersInSettings).GetProperty(what);
+            if(prop != null){
+              prop.SetValue(sonar.drawMarkersIn, true);
               log($"{what} markers {name} are revealed");
             } else  log("no such mission");
           } else {
             if(sonar.allowedPositionsIn.ContainsKey(what)){
+              PropertyInfo prop = typeof(DrawMarkersInSettings).GetProperty(what);
+
               sonar.allowedPositionsIn[what][positionType] = true;
-              sonar.drawMarkersIn[what] = true;
+              prop.SetValue(sonar.drawMarkersIn, true);
               log($"{what} markers {name} in {positionType} are revealed");
             } else log("no such mission or it doesn't support this position");
           }
@@ -254,7 +259,7 @@ namespace NoMarkersNamespace
 
       string[][] hints = new string[][] {
         subCommands.Keys.ToArray(),
-        settings.HandheldSonar.drawMarkersIn.Keys.Concat(new string[]{"all","labels","caves","minerals","outposts","submarines","aitargets"}).ToArray(),
+        typeof(DrawMarkersInSettings).GetProperties().Select(p=>p.Name).Concat(new string[]{"all","labels","caves","minerals","outposts","submarines","aitargets"}).ToArray(),
         allPositionTypes.Concat(new string[]{"any"}).ToArray(),
         new string[]{"onhandheldsonar","onstaticsonar"},
       };

@@ -16,7 +16,7 @@ using Barotrauma.Networking;
 [assembly: IgnoresAccessChecksTo("DedicatedServer")]
 [assembly: IgnoresAccessChecksTo("BarotraumaCore")]
 
-namespace NoMarkersNamespace
+namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
@@ -26,7 +26,7 @@ namespace NoMarkersNamespace
 
     public void Initialize()
     {
-      harmony = new Harmony("no.markers");
+      harmony = new Harmony("fewer.sonar.markers");
       try
       {
         figureOutModVersionAndDirPath();
@@ -47,12 +47,12 @@ namespace NoMarkersNamespace
           Settings.askServerForSettings();
         }
 
-        if (ModStage == "debug") log("compiled!");
+        info($"{ModName} {ModVersion} Compiled");
       }
       catch (Exception e)
       {
         log("can't load Fewer Sonar Markers", Color.Orange);
-        log(e, Color.Orange);
+        err(e);
       }
     }
 

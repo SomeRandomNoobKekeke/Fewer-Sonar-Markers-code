@@ -9,6 +9,7 @@
     "showAiTargets": false,
     "drawMarkersIn": {
       "ClearRuinMission": false,
+      "ClearThalamusMission": false,
       "BeaconMission": false,
       "AbandonedOutpostMission": false,
       "EndMission": false,
@@ -54,6 +55,7 @@
     "showAiTargets": false,
     "drawMarkersIn": {
       "ClearRuinMission": false,
+      "ClearThalamusMission": false,
       "BeaconMission": false,
       "AbandonedOutpostMission": false,
       "EndMission": false,
