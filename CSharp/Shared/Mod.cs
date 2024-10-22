@@ -22,7 +22,7 @@ namespace FewerSonarMarkers
     public static string ModVersion = "1.0.0";
     public static string ModName = "Fewer Sonar Markers";
     public static string ModDir = "";
-    public static bool debug = true;
+    public static bool debug = false;
 
     public void figureOutModVersionAndDirPath()
     {

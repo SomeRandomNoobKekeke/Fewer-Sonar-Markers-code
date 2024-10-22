@@ -201,6 +201,38 @@ namespace FewerSonarMarkers
                 onlyShowTextOnMouseOver: mySettings.showMarkersOnlyOnMouseHover);
           }
         }
+
+        if (GameMain.NetworkMember is { } networkMember && GameMain.GameSession?.GameMode is PvPMode)
+        {
+          if (networkMember.ServerSettings.TrackOpponentInPvP
+              && Submarine.MainSubs[0] is { } coalitionSub
+              && Submarine.MainSubs[1] is { } separatistSub
+              && Character.Controlled is { } player)
+          {
+            Submarine whichSubToDraw = player.TeamID switch
+            {
+              CharacterTeamType.Team1 => separatistSub,
+              CharacterTeamType.Team2 => coalitionSub,
+              _ => null
+            };
+
+            if (whichSubToDraw != null)
+            {
+              _.DrawOffsetMarker(spriteBatch,
+                         Sonar.enemyLabel.Value,
+                         Tags.Submarine,
+                         Tags.Enemy,
+                         whichSubToDraw.WorldPosition,
+                         transducerCenter,
+                         distanceThresholds: new Range<float>(start: MetersToUnits(150), end: MetersToUnits(1600)),
+                         offset: new Range<float>(start: MetersToUnits(100), end: MetersToUnits(400)),
+                         minOffset: MetersToUnits(10));
+
+              static float MetersToUnits(float m)
+                  => m / Physics.DisplayToRealWorldRatio;
+            }
+          }
+        }
       }
 
       int missionIndex = 0;
@@ -227,7 +259,7 @@ namespace FewerSonarMarkers
       }
 
       if (mySettings.showMinerals && _.HasMineralScanner && _.UseMineralScanner && _.CurrentMode == Sonar.Mode.Active && _.MineralClusters != null &&
-          (_.item.CurrentHull == null || !_.DetectSubmarineWalls))
+          (_.item.CurrentHull == null || !_.DetectSubmarineWalls) && _.HasPower)
       {
         foreach (var c in _.MineralClusters)
         {
@@ -263,7 +295,7 @@ namespace FewerSonarMarkers
         {
           if (!sub.ShowSonarMarker) { continue; }
           if (_.connectedSubs.Contains(sub)) { continue; }
-          if (Level.Loaded != null && sub.WorldPosition.Y > Level.Loaded.Size.Y) { continue; }
+          if (sub.IsAboveLevel) { continue; }
 
           if (_.item.Submarine != null || Character.Controlled != null)
           {
