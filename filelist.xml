@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<contentpackage name="Fewer Sonar Markers (code)" modversion="4.2.1" corepackage="False" steamworkshopid="3270546793" gameversion="1.5.7.0">
+  <Item file="%ModDir%/dummyitem.xml" />
+</contentpackage>

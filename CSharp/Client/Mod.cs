@@ -74,7 +74,7 @@ namespace FewerSonarMarkers
 
     public void Dispose()
     {
-      harmony.UnpatchAll(harmony.Id);
+      harmony.UnpatchSelf();
       harmony = null;
       removeCommands();
       settings = null;
