@@ -21,7 +21,7 @@ namespace FewerSonarMarkers
 {
   public partial class Mod : IAssemblyPlugin
   {
-    public static bool Sonar_DrawSonar_Prefix(SpriteBatch spriteBatch, Rectangle rect, Sonar __instance)
+    public static bool Sonar_DrawSonar_Replace(SpriteBatch spriteBatch, Rectangle rect, Sonar __instance)
     {
       if (!settings.ModEnabled) return true;
 
@@ -240,6 +240,7 @@ namespace FewerSonarMarkers
       {
         if (!isMissionAllowed(mission, _)) continue;
 
+        if (!mission.Prefab.ShowSonarLabels) { continue; }
         int i = 0;
         foreach ((LocalizedString label, Vector2 position) in mission.SonarLabels)
         {

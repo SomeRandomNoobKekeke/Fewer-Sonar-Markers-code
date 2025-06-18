@@ -60,7 +60,7 @@ namespace FewerSonarMarkers
     {
       harmony.Patch(
         original: typeof(Sonar).GetMethod("DrawSonar", AccessTools.all),
-        prefix: new HarmonyMethod(typeof(Mod).GetMethod("Sonar_DrawSonar_Prefix"))
+        prefix: new HarmonyMethod(typeof(Mod).GetMethod("Sonar_DrawSonar_Replace"))
       );
 
       harmony.Patch(
